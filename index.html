@@ -1,0 +1,974 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <title>Khmer House Resort - Digital Menu</title>
+    
+    <!-- Fullscreen Meta Tags -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="theme-color" content="#0a0a0a">
+    <meta name="apple-mobile-web-app-title" content="Khmer House Menu">
+    
+    <style>
+
+        @import url('https://fonts.googleapis.com/css2?family=Manrope:wght@200..800&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Manrope", sans-serif;
+        }
+
+        :fullscreen, :-webkit-full-screen, :-moz-full-screen {
+            background-color: #e0e0e0;
+        }
+
+        html, body {
+            height: 100%;
+            width: 100%;
+            overflow: hidden;
+            position: fixed;
+            background: #dddddd;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
+            color: white;
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+            overscroll-behavior-y: none;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        /* Smooth scrolling */
+        html {
+            scroll-behavior: smooth;
+        }
+
+        /* Hide scrollbar */
+        ::-webkit-scrollbar {
+            width: 0;
+            height: 0;
+        }
+
+        /* Completely disable selection on everything */
+        * {
+            -webkit-tap-highlight-color: transparent;
+            -webkit-touch-callout: none;
+            -webkit-user-select: none;
+            -khtml-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+        }
+
+        /* Allow scrolling */
+        .main-content, .side-menu, .grid-modal {
+            -webkit-overflow-scrolling: touch;
+            overflow-y: auto;
+        }
+
+        /* Top Navigation */
+        .top-nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: #fefefe;
+            backdrop-filter: blur(10px);
+            z-index: 100;
+            padding: 12px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid rgba(255, 215, 0, 0.2);
+            box-shadow: 0 2px 20px rgba(0,0,0,0.5);
+            height: 60px; /* Fixed height */
+        }
+
+        /* iOS safe areas */
+        @supports (padding: max(0px)) {
+            .top-nav {
+                padding-top: max(12px, env(safe-area-inset-top));
+                padding-left: max(20px, env(safe-area-inset-left));
+                padding-right: max(20px, env(safe-area-inset-right));
+                height: calc(60px + env(safe-area-inset-top));
+            }
+            
+            .bottom-nav {
+                padding-bottom: max(12px, env(safe-area-inset-bottom));
+                padding-left: max(20px, env(safe-area-inset-left));
+                padding-right: max(20px, env(safe-area-inset-right));
+                height: calc(60px + env(safe-area-inset-bottom));
+            }
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 18px;
+            font-weight: 600;
+            color: #73a447;
+            letter-spacing: 1px;
+        }
+
+        .logo-icon {
+            font-size: 24px;
+        }
+
+        .nav-buttons {
+            display: flex;
+            gap: 12px;
+            background: rgba(255,255,255,0.05);
+            padding: 4px;
+            border-radius: 30px;
+        }
+
+        .nav-btn {
+            background: transparent;
+            border: none;
+            color: #888;
+            padding: 8px 20px;
+            border-radius: 25px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .nav-btn.active {
+            background: #73a447;
+            color: #ffffff;
+            box-shadow: 0 4px 15px #72a44734;
+        }
+
+        .nav-btn:active {
+            background: #72a4477e;
+            color: #73a447;
+            transform: scale(0.95);
+        }
+
+        .menu-toggle {
+            width: 40px;
+            height: 40px;
+            background: #72a4471e;
+            border: 1px solid #73a447;
+            border-radius: 50%;
+            color: #73a447;
+            font-size: 20px;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .menu-toggle:active {
+            background: #73a447;
+            color: #0a0a0a;
+            transform: scale(0.95);
+        }
+
+        /* Progress Bar */
+        .progress-bar {
+            position: fixed;
+            top: 60px;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: rgba(255,255,255,0.1);
+            z-index: 99;
+        }
+
+        @supports (padding: max(0px)) {
+            .progress-bar {
+                top: calc(60px + env(safe-area-inset-top));
+            }
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #8dc499, #8fb8a4);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        /* Side Menu */
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.7);
+            backdrop-filter: blur(5px);
+            z-index: 200;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s;
+        }
+
+        .overlay.show {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .side-menu {
+            position: fixed;
+            top: 0;
+            left: -100%;
+            width: 85%;
+            max-width: 380px;
+            height: 100%;
+            background: linear-gradient(145deg, #f5f5f5 0%, #f1f1f1 100%);
+            z-index: 201;
+            transition: left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            overflow-y: auto;
+            padding: 20px;
+            border-right: 1px solid rgba(255,215,0,0.2);
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .side-menu.open {
+            left: 0;
+        }
+
+        .side-menu-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #73a447;
+        }
+
+        .side-menu-title {
+            font-size: 22px;
+            font-weight: bold;
+            color: #73a447;
+        }
+
+        .close-menu {
+            width: 40px;
+            height: 40px;
+            background: rgba(0, 0, 0, 0.233);
+            border: none;
+            border-radius: 50%;
+            color: rgb(19, 19, 19);
+            font-size: 18px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .close-menu:active {
+            background: #72a4473d;
+            color: #73a447;
+            transform: scale(0.95);
+        }
+
+        .menu-section {
+            margin-bottom: 30px;
+        }
+
+        .menu-section-title {
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: #73a447;
+            margin-bottom: 15px;
+            padding-left: 10px;
+            font-weight: 500;
+        }
+
+        .menu-item {
+            display: flex;
+            align-items: center;
+            padding: 12px 10px;
+            margin-bottom: 5px;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: 1px solid transparent;
+        }
+
+        .menu-item:active {
+            background: rgba(255, 215, 0, 0.1);
+            border-color: rgba(255, 215, 0, 0.3);
+            transform: translateX(5px);
+        }
+
+        .menu-item.active {
+            background: #72a44728;
+            border-color: #73a447;
+        }
+
+        .menu-item-thumb {
+            width: 50px;
+            height: 50px;
+            border-radius: 8px;
+            object-fit: cover;
+            margin-right: 15px;
+            border: 2px solid #73a447;
+        }
+
+        .menu-item-info {
+            flex: 1;
+        }
+
+        .menu-item-name {
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 4px;
+            color: rgb(17, 17, 17);
+        }
+
+        .menu-item-page {
+            font-size: 11px;
+            color: #73a447;
+        }
+
+        /* Main Content with Snap Scroll - FIXED LAYOUT */
+        .main-content {
+            position: fixed;
+            top: 63px;
+            bottom: 80px;
+            left: 0;
+            right: 0;
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
+            scroll-snap-type: y mandatory;
+            scroll-padding-top: 0;
+            scroll-behavior: smooth;
+        }
+
+        @supports (padding: max(0px)) {
+            .main-content {
+                top: calc(63px + env(safe-area-inset-top));
+                bottom: calc(60px + env(safe-area-inset-bottom));
+            }
+        }
+
+        .menu-container {
+            width: 100%;
+            min-height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .page {
+            width: 100%;
+            height: 100%; /* Use 100% of parent, not vh */
+            min-height: 100%;
+            scroll-snap-align: start;
+            scroll-snap-stop: always;
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeInUp 0.5s ease forwards;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #dfdfdf;
+            flex-shrink: 0;
+            padding: 10px;
+        }
+
+        @keyframes fadeInUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .page img {
+            max-width: 100%;
+            max-height: 100%;
+            width: auto;
+            height: auto;
+            display: block;
+            object-fit: contain;
+            border-radius: 20px;
+
+        }
+
+        /* Bottom Navigation */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(10, 10, 10, 0.95);
+            backdrop-filter: blur(10px);
+            z-index: 100;
+            padding: 10px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-top: 1px solid rgba(255, 215, 0, 0.2);
+            height: 60px;
+        }
+
+        .nav-arrows {
+            display: flex;
+            gap: 15px;
+        }
+
+        .arrow-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: rgba(255, 217, 0, 0);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: #ffffff;
+            font-size: 20px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s;
+        }
+
+        .arrow-btn:active {
+            background: #73a447;
+            color: #0a0a0a;
+            transform: scale(0.95);
+        }
+
+        .page-indicator {
+            text-align: center;
+            width: 150px;
+            background: rgba(255, 217, 0, 0);
+            padding: 8px 10px;
+            border-radius: 30px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .page-number {
+            font-size: 16px;
+            font-weight: 600;
+            color: #ffffff;
+        }
+
+        .page-name {
+            display: none;
+            font-size: 11px;
+            color: #888;
+            max-width: 150px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .grid-view-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: rgba(255, 217, 0, 0);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: #ffffff;
+            font-size: 20px;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .grid-view-btn:active {
+            background: #73a447;
+            color: #0a0a0a;
+            transform: scale(0.95);
+        }
+
+        /* Grid Modal */
+        .grid-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: #0a0a0a;
+            z-index: 300;
+            overflow-y: auto;
+            transform: translateY(100%);
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .grid-modal.open {
+            transform: translateY(0);
+        }
+
+        .grid-header {
+            position: sticky;
+            top: 0;
+            background: #0a0a0a;
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid rgba(255,215,0,0.2);
+            z-index: 10;
+        }
+
+        .grid-title {
+            font-size: 20px;
+            font-weight: bold;
+            color: #73a447;
+        }
+
+        .close-grid {
+            width: 40px;
+            height: 40px;
+            background: rgba(255, 217, 0, 0);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            color: #ffffff;
+            font-size: 20px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .close-grid:active {
+            background: #73a447;
+            color: #0a0a0a;
+            transform: scale(0.95);
+        }
+
+        .grid-container {
+            padding: 20px;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            padding-bottom: 40px;
+        }
+
+        .grid-item {
+            aspect-ratio: 3/4;
+            border-radius: 16px;
+            overflow: hidden;
+            cursor: pointer;
+            position: relative;
+            border: 2px solid transparent;
+            transition: all 0.3s;
+
+        }
+
+        .grid-item:active {
+            border-color: #FFD700;
+            transform: translateY(-5px);
+        }
+
+        .grid-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.3s;
+        }
+
+        .grid-item:active img {
+            transform: scale(1.1);
+        }
+
+        .grid-item-label {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(transparent, rgba(0,0,0,0.9));
+            padding: 30px 10px 15px;
+            font-size: 13px;
+            font-weight: 600;
+            color: #ffffff;
+        }
+
+        /* Loading Animation */
+        .loading-skeleton {
+            background: linear-gradient(90deg, #1a1a1a 25%, #2a2a2a 50%, #1a1a1a 75%);
+            background-size: 200% 100%;
+            animation: loading 1.5s infinite;
+        }
+
+        @keyframes loading {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
+        }
+
+        /* Disabled state for buttons */
+        .arrow-btn[disabled] {
+            opacity: 0.5;
+            pointer-events: none;
+        }
+    </style>
+</head>
+<body>
+    <!-- Top Navigation -->
+    <div class="top-nav">
+        <div class="logo">
+            <span class="logo-icon"><img src="logo.png" alt="" width="80px"></span>
+        </div>
+        <div class="nav-buttons">
+            <button class="nav-btn active" onclick="switchMenu('food', event)">FOOD</button>
+            <button class="nav-btn" onclick="switchMenu('drink', event)">DRINKS</button>
+        </div>
+        <button class="menu-toggle" onclick="toggleMenu()">☰</button>
+    </div>
+
+    <!-- Progress Bar -->
+    <div class="progress-bar">
+        <div class="progress-fill" id="progressFill"></div>
+    </div>
+
+    <!-- Side Menu -->
+    <div class="overlay" id="overlay" onclick="closeMenu()"></div>
+    <div class="side-menu" id="sideMenu">
+        <div class="side-menu-header">
+            <div class="side-menu-title">MENU</div>
+            <button class="close-menu" onclick="closeMenu()">✕</button>
+        </div>
+        
+        <div class="menu-section">
+            <div class="menu-section-title">Food Menu</div>
+            <div id="foodMenuList" class="menu-list"></div>
+        </div>
+        
+        <div class="menu-section">
+            <div class="menu-section-title">Drink Menu</div>
+            <div id="drinkMenuList" class="menu-list"></div>
+        </div>
+    </div>
+
+    <!-- Grid View Modal -->
+    <div class="grid-modal" id="gridModal">
+        <div class="grid-header">
+            <div class="grid-title">All Pages</div>
+            <button class="close-grid" onclick="closeGrid()">✕</button>
+        </div>
+        <div class="grid-container" id="gridContainer"></div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content" id="mainContent">
+        <div class="menu-container" id="menuContainer">
+            <!-- Pages will be inserted here -->
+        </div>
+    </div>
+
+    <!-- Bottom Navigation -->
+    <div class="bottom-nav">
+        <div class="nav-arrows">
+            <button class="arrow-btn" onclick="prevPage()" id="prevBtn"><i class="fa-solid fa-chevron-up"></i></button>
+            <button class="arrow-btn" onclick="nextPage()" id="nextBtn"><i class="fa-solid fa-chevron-down"></i></button>
+        </div>
+        
+        <div class="page-indicator">
+            <div class="page-number"><span id="currentPage">1</span> / <span id="totalPages">18</span></div>
+            <div class="page-name" id="pageName">Food Menu Cover</div>
+        </div>
+        
+        <button class="grid-view-btn" onclick="openGrid()"><i class="fa-regular fa-images"></i></button>
+    </div>
+
+    <script>
+        // Menu Data
+        const menuData = [
+            // Food Menu (11 pages)
+            { id: 1, name: "Food Menu Cover", section: "food", file: "1 (1).webp" },
+            { id: 2, name: "Appetisers", section: "food", file: "2 (1).webp" },
+            { id: 3, name: "Salad", section: "food", file: "3 (1).webp" },
+            { id: 4, name: "Spaghetti & Pizza", section: "food", file: "4 (1).webp" },
+            { id: 5, name: "Sandwich & Burger", section: "food", file: "5 (1).webp" },
+            { id: 6, name: "Western", section: "food", file: "6 (1).webp" },
+            { id: 7, name: "Khmer & Asian", section: "food", file: "7 (1).webp" },
+            { id: 8, name: "Japanese", section: "food", file: "9.webp" },
+            { id: 9, name: "Japanese Noodle", section: "food", file: "10.webp" },
+            { id: 10, name: "Japanese Sushi", section: "food", file: "8.webp" },
+            { id: 11, name: "Dessert", section: "food", file: "11.webp" },
+            // Drink Menu (7 pages)
+            { id: 12, name: "Drink Menu Cover", section: "drink", file: "1.webp" },
+            { id: 13, name: "Coffee & Tea", section: "drink", file: "2.webp" },
+            { id: 14, name: "Juice & Soda", section: "drink", file: "3.webp" },
+            { id: 15, name: "Liqueurs", section: "drink", file: "5.webp" },
+            { id: 16, name: "Beer & Wines", section: "drink", file: "4.webp" },
+            { id: 17, name: "Cocktails", section: "drink", file: "6.webp" },
+            { id: 18, name: "Tropicals & Mocktails", section: "drink", file: "7.webp" }
+        ];
+
+        let currentPageIndex = 0;
+        let isMenuOpen = false;
+        let isGridOpen = false;
+        let isScrolling = false;
+        let scrollTimeout;
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            renderPages();
+            renderSideMenu();
+            renderGrid();
+            setupScrollListener();
+            updateNavigation();
+            preloadImages();
+            setupResizeListener();
+        });
+
+        // Handle resize/orientation changes
+        function setupResizeListener() {
+            let resizeTimeout;
+            window.addEventListener('resize', () => {
+                clearTimeout(resizeTimeout);
+                resizeTimeout = setTimeout(() => {
+                    // Recalculate positions after resize
+                    goToPage(currentPageIndex);
+                }, 250);
+            });
+            
+            // Handle orientation change specifically
+            window.addEventListener('orientationchange', () => {
+                setTimeout(() => {
+                    goToPage(currentPageIndex);
+                }, 300);
+            });
+        }
+
+        // Preload images
+        function preloadImages() {
+            menuData.forEach(item => {
+                const img = new Image();
+                img.src = item.file;
+            });
+        }
+
+        // Render Pages
+        function renderPages() {
+            const container = document.getElementById('menuContainer');
+            container.innerHTML = menuData.map((item, index) => `
+                <div class="page" id="page-${index}" data-index="${index}" data-section="${item.section}">
+                    <img src="${item.file}" alt="${item.name}" loading="lazy" 
+                         onerror="this.src='https://via.placeholder.com/400x600?text=Image+Not+Found'">
+                </div>
+            `).join('');
+        }
+
+        // Render Side Menu
+        function renderSideMenu() {
+            const foodList = document.getElementById('foodMenuList');
+            const drinkList = document.getElementById('drinkMenuList');
+            
+            foodList.innerHTML = menuData.filter(i => i.section === 'food').map(item => {
+                const index = menuData.indexOf(item);
+                return `
+                    <div class="menu-item" onclick="goToPage(${index})">
+                        <img src="${item.file}" class="menu-item-thumb" alt="" 
+                             onerror="this.src='https://via.placeholder.com/50x50?text=Error'">
+                        <div class="menu-item-info">
+                            <div class="menu-item-name">${item.name}</div>
+                            <div class="menu-item-page">Page ${index + 1}</div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+            
+            drinkList.innerHTML = menuData.filter(i => i.section === 'drink').map(item => {
+                const index = menuData.indexOf(item);
+                return `
+                    <div class="menu-item" onclick="goToPage(${index})">
+                        <img src="${item.file}" class="menu-item-thumb" alt=""
+                             onerror="this.src='https://via.placeholder.com/50x50?text=Error'">
+                        <div class="menu-item-info">
+                            <div class="menu-item-name">${item.name}</div>
+                            <div class="menu-item-page">Page ${index + 1}</div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // Render Grid
+        function renderGrid() {
+            const container = document.getElementById('gridContainer');
+            container.innerHTML = menuData.map((item, index) => `
+                <div class="grid-item" onclick="goToPage(${index}); closeGrid();">
+                    <img src="${item.file}" alt="${item.name}" loading="lazy"
+                         onerror="this.src='https://via.placeholder.com/300x400?text=Error'">
+                    <div class="grid-item-label">${item.name}</div>
+                </div>
+            `).join('');
+        }
+
+        // Navigation Functions
+        function goToPage(index) {
+            if (index < 0 || index >= menuData.length) return;
+            
+            currentPageIndex = index;
+            const page = document.getElementById(`page-${index}`);
+            
+            // Scroll to page with snap
+            page.scrollIntoView({ 
+                behavior: 'smooth', 
+                block: 'start',
+                inline: 'start'
+            });
+            
+            closeMenu();
+            closeGrid();
+            updateNavigation();
+        }
+
+        function nextPage() {
+            if (currentPageIndex < menuData.length - 1) {
+                goToPage(currentPageIndex + 1);
+            } else {
+                // Visual feedback at end of menu
+                const btn = document.getElementById('nextBtn');
+                btn.style.transform = 'scale(0.9)';
+                setTimeout(() => btn.style.transform = '', 200);
+            }
+        }
+
+        function prevPage() {
+            if (currentPageIndex > 0) {
+                goToPage(currentPageIndex - 1);
+            } else {
+                // Visual feedback at start of menu
+                const btn = document.getElementById('prevBtn');
+                btn.style.transform = 'scale(0.9)';
+                setTimeout(() => btn.style.transform = '', 200);
+            }
+        }
+
+        function updateNavigation() {
+            document.getElementById('currentPage').textContent = currentPageIndex + 1;
+            document.getElementById('totalPages').textContent = menuData.length;
+            document.getElementById('pageName').textContent = menuData[currentPageIndex].name;
+            
+            // Update progress bar
+            const progress = ((currentPageIndex + 1) / menuData.length) * 100;
+            document.getElementById('progressFill').style.width = progress + '%';
+            
+            // Update active states in side menu
+            document.querySelectorAll('.menu-item').forEach((item, index) => {
+                item.classList.toggle('active', index === currentPageIndex);
+            });
+        }
+
+        // Scroll Listener for snap scroll
+        function setupScrollListener() {
+            const mainContent = document.getElementById('mainContent');
+            
+            mainContent.addEventListener('scroll', () => {
+                isScrolling = true;
+                
+                // Clear previous timeout
+                if (scrollTimeout) {
+                    clearTimeout(scrollTimeout);
+                }
+                
+                // Set timeout to detect when scrolling stops
+                scrollTimeout = setTimeout(() => {
+                    isScrolling = false;
+                    
+                    // Find which page is most visible
+                    const pages = document.querySelectorAll('.page');
+                    const containerTop = mainContent.scrollTop;
+                    const containerHeight = mainContent.clientHeight;
+                    
+                    let bestIndex = currentPageIndex;
+                    let bestVisibility = 0;
+                    
+                    pages.forEach((page, index) => {
+                        const pageTop = page.offsetTop;
+                        const pageBottom = pageTop + page.clientHeight;
+                        
+                        // Calculate how much of the page is visible
+                        const visibleTop = Math.max(containerTop, pageTop);
+                        const visibleBottom = Math.min(containerTop + containerHeight, pageBottom);
+                        const visibleHeight = Math.max(0, visibleBottom - visibleTop);
+                        const visibility = visibleHeight / containerHeight;
+                        
+                        if (visibility > bestVisibility) {
+                            bestVisibility = visibility;
+                            bestIndex = index;
+                        }
+                    });
+                    
+                    if (bestIndex !== currentPageIndex) {
+                        currentPageIndex = bestIndex;
+                        updateNavigation();
+                    }
+                }, 150);
+            }, { passive: true });
+        }
+
+        // Menu Toggle
+        function toggleMenu() {
+            if (isMenuOpen) {
+                closeMenu();
+            } else {
+                openMenu();
+            }
+        }
+
+        function openMenu() {
+            document.getElementById('sideMenu').classList.add('open');
+            document.getElementById('overlay').classList.add('show');
+            isMenuOpen = true;
+        }
+
+        function closeMenu() {
+            document.getElementById('sideMenu').classList.remove('open');
+            document.getElementById('overlay').classList.remove('show');
+            isMenuOpen = false;
+        }
+
+        // Grid Toggle
+        function openGrid() {
+            document.getElementById('gridModal').classList.add('open');
+            isGridOpen = true;
+        }
+
+        function closeGrid() {
+            document.getElementById('gridModal').classList.remove('open');
+            isGridOpen = false;
+        }
+
+        // Switch Menu Filter
+        function switchMenu(type, event) {
+            document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+            
+            const firstPageIndex = type === 'food' ? 0 : 11;
+            goToPage(firstPageIndex);
+        }
+
+        // Keyboard Support
+        document.addEventListener('keydown', (e) => {
+            // Prevent scrolling with arrow keys
+            if (e.key.startsWith('Arrow')) {
+                e.preventDefault();
+            }
+            
+            if (e.key === 'ArrowDown' || e.key === 'ArrowRight') {
+                nextPage();
+            } else if (e.key === 'ArrowUp' || e.key === 'ArrowLeft') {
+                prevPage();
+            } else if (e.key === 'Escape') {
+                if (isMenuOpen) closeMenu();
+                if (isGridOpen) closeGrid();
+            }
+        });
+
+        // Error handling for images
+        window.addEventListener('error', (e) => {
+            if (e.target.tagName === 'IMG') {
+                e.target.src = 'https://via.placeholder.com/400x600?text=Menu+Page';
+            }
+        }, true);
+    </script>
+</body>
+</html>
