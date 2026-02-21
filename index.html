@@ -70,6 +70,177 @@
             overflow-y: auto;
         }
 
+        /* Loading Screen */
+        .loading-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #f3f3f3 0%, #dddddd 100%);
+            z-index: 10000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: opacity 0.5s ease, visibility 0.5s ease;
+        }
+
+        .loading-screen.hidden {
+            opacity: 0;
+            visibility: hidden;
+        }
+
+        .loading-content {
+            text-align: center;
+            color: rgb(37, 37, 37);
+            max-width: 300px;
+        }
+
+        .loading-spinner {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 30px;
+            border: 4px solid rgba(255, 255, 255, 0.3);
+            border-top: 4px solid #73a447;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        .loading-content h2 {
+            font-size: 24px;
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+
+        .loading-progress {
+            width: 100%;
+            height: 6px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 20px 0;
+        }
+
+        .loading-progress-bar {
+            height: 100%;
+            background: #73a447;
+            width: 0%;
+            transition: width 0.3s ease;
+            border-radius: 10px;
+        }
+
+        .loading-percentage {
+            font-size: 18px;
+            font-weight: 600;
+            color: #73a447;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 5px 15px;
+            border-radius: 20px;
+            display: inline-block;
+        }
+
+        .loading-status {
+            margin-top: 15px;
+            font-size: 14px;
+            opacity: 0.8;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Mobile Unavailable Message */
+        .desktop-message {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            z-index: 9999;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .message-content {
+            max-width: 400px;
+            background: rgba(255, 255, 255, 0.95);
+            padding: 40px 30px;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            animation: fadeInUp 0.6s ease;
+        }
+
+        .message-content i {
+            font-size: 80px;
+            color: #73a447;
+            margin-bottom: 20px;
+        }
+
+        .message-content h2 {
+            font-size: 28px;
+            color: #333;
+            margin-bottom: 15px;
+            font-weight: 700;
+        }
+
+        .message-content p {
+            font-size: 16px;
+            color: #666;
+            line-height: 1.6;
+            margin-bottom: 25px;
+        }
+
+        .message-content .qr-code {
+            width: 150px;
+            height: 150px;
+            background: #f0f0f0;
+            margin: 20px auto;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid #73a447;
+        }
+
+        .message-content .qr-code i {
+            font-size: 100px;
+            color: #73a447;
+            margin: 0;
+        }
+
+        .message-content .small-text {
+            font-size: 14px;
+            color: #888;
+            margin-top: 20px;
+        }
+
+        @media (min-width: 768px) {
+            .desktop-message {
+                display: flex;
+            }
+            
+            /* Hide the actual app on desktop */
+            .top-nav, .progress-bar, .main-content, .bottom-nav, .side-menu, .overlay, .grid-modal, .loading-screen {
+                display: none;
+            }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
         /* Top Navigation */
         .top-nav {
             position: fixed;
@@ -608,6 +779,32 @@
     </style>
 </head>
 <body>
+    <!-- Loading Screen -->
+    <div class="loading-screen" id="loadingScreen">
+        <div class="loading-content">
+            <div class="loading-spinner"></div>
+            <h2>Khmer House Resort</h2>
+            <div class="loading-progress">
+                <div class="loading-progress-bar" id="loadingProgressBar"></div>
+            </div>
+            <div class="loading-percentage" id="loadingPercentage">0%</div>
+            <div class="loading-status" id="loadingStatus">Loading menu pages...</div>
+        </div>
+    </div>
+
+    <!-- Desktop Message -->
+    <div class="desktop-message">
+        <div class="message-content">
+            <i class="fas fa-mobile-alt"></i>
+            <h2>Mobile Only</h2>
+            <p>This digital menu is optimized for mobile devices. Please open this link on your smartphone for the best experience.</p>
+            <div class="qr-code">
+                <img src="qrcode.png" alt="" width="100%">
+            </div>
+            <p class="small-text">Scan the QR code with your phone to access the menu</p>
+        </div>
+    </div>
+
     <!-- Top Navigation -->
     <div class="top-nav">
         <div class="logo">
@@ -630,7 +827,7 @@
     <div class="side-menu" id="sideMenu">
         <div class="side-menu-header">
             <div class="side-menu-title">MENU</div>
-            <button class="close-menu" onclick="closeMenu()">✕</button>
+            <button class="close-menu" onclick="closeMenu()"><i class="fa-solid fa-xmark"></i></button>
         </div>
         
         <div class="menu-section">
@@ -648,7 +845,7 @@
     <div class="grid-modal" id="gridModal">
         <div class="grid-header">
             <div class="grid-title">All Pages</div>
-            <button class="close-grid" onclick="closeGrid()">✕</button>
+            <button class="close-grid" onclick="closeGrid()"><i class="fa-solid fa-xmark"></i></button>
         </div>
         <div class="grid-container" id="gridContainer"></div>
     </div>
@@ -705,16 +902,86 @@
         let isGridOpen = false;
         let isScrolling = false;
         let scrollTimeout;
+        let loadedImages = 0;
+        const totalImages = menuData.length;
+
+        // Check if mobile device
+        function isMobileDevice() {
+            return (window.innerWidth <= 768);
+        }
+
+        // Update loading progress
+        function updateLoadingProgress() {
+            const progress = Math.round((loadedImages / totalImages) * 100);
+            document.getElementById('loadingProgressBar').style.width = progress + '%';
+            document.getElementById('loadingPercentage').textContent = progress + '%';
+            
+            if (loadedImages < totalImages) {
+                document.getElementById('loadingStatus').textContent = 
+                    `Loading menu pages... ${loadedImages}/${totalImages}`;
+            }
+        }
+
+        // Preload images with progress tracking
+        function preloadImages() {
+            return new Promise((resolve) => {
+                if (totalImages === 0) resolve();
+                
+                menuData.forEach((item, index) => {
+                    const img = new Image();
+                    img.src = item.file;
+                    
+                    img.onload = () => {
+                        loadedImages++;
+                        updateLoadingProgress();
+                        
+                        if (loadedImages === totalImages) {
+                            document.getElementById('loadingStatus').textContent = 'Loading complete!';
+                            setTimeout(() => {
+                                document.getElementById('loadingScreen').classList.add('hidden');
+                                resolve();
+                            }, 500);
+                        }
+                    };
+                    
+                    img.onerror = () => {
+                        loadedImages++;
+                        updateLoadingProgress();
+                        
+                        if (loadedImages === totalImages) {
+                            document.getElementById('loadingStatus').textContent = 'Loading complete!';
+                            setTimeout(() => {
+                                document.getElementById('loadingScreen').classList.add('hidden');
+                                resolve();
+                            }, 500);
+                        }
+                    };
+                });
+            });
+        }
 
         // Initialize
-        document.addEventListener('DOMContentLoaded', () => {
-            renderPages();
-            renderSideMenu();
-            renderGrid();
-            setupScrollListener();
-            updateNavigation();
-            preloadImages();
-            setupResizeListener();
+        document.addEventListener('DOMContentLoaded', async () => {
+            if (isMobileDevice()) {
+                // Show loading screen
+                document.getElementById('loadingScreen').style.display = 'flex';
+                
+                // Render pages first
+                renderPages();
+                renderSideMenu();
+                renderGrid();
+                
+                // Preload all images with progress
+                await preloadImages();
+                
+                // Setup everything else after loading
+                setupScrollListener();
+                updateNavigation();
+                setupResizeListener();
+                
+                // Go to first page
+                goToPage(0);
+            }
         });
 
         // Handle resize/orientation changes
@@ -724,23 +991,19 @@
                 clearTimeout(resizeTimeout);
                 resizeTimeout = setTimeout(() => {
                     // Recalculate positions after resize
-                    goToPage(currentPageIndex);
+                    if (isMobileDevice()) {
+                        goToPage(currentPageIndex);
+                    }
                 }, 250);
             });
             
             // Handle orientation change specifically
             window.addEventListener('orientationchange', () => {
                 setTimeout(() => {
-                    goToPage(currentPageIndex);
+                    if (isMobileDevice()) {
+                        goToPage(currentPageIndex);
+                    }
                 }, 300);
-            });
-        }
-
-        // Preload images
-        function preloadImages() {
-            menuData.forEach(item => {
-                const img = new Image();
-                img.src = item.file;
             });
         }
 
@@ -803,17 +1066,20 @@
 
         // Navigation Functions
         function goToPage(index) {
+            if (!isMobileDevice()) return;
             if (index < 0 || index >= menuData.length) return;
             
             currentPageIndex = index;
             const page = document.getElementById(`page-${index}`);
             
-            // Scroll to page with snap
-            page.scrollIntoView({ 
-                behavior: 'smooth', 
-                block: 'start',
-                inline: 'start'
-            });
+            if (page) {
+                // Scroll to page with snap
+                page.scrollIntoView({ 
+                    behavior: 'smooth', 
+                    block: 'start',
+                    inline: 'start'
+                });
+            }
             
             closeMenu();
             closeGrid();
@@ -821,6 +1087,7 @@
         }
 
         function nextPage() {
+            if (!isMobileDevice()) return;
             if (currentPageIndex < menuData.length - 1) {
                 goToPage(currentPageIndex + 1);
             } else {
@@ -832,6 +1099,7 @@
         }
 
         function prevPage() {
+            if (!isMobileDevice()) return;
             if (currentPageIndex > 0) {
                 goToPage(currentPageIndex - 1);
             } else {
@@ -862,6 +1130,8 @@
             const mainContent = document.getElementById('mainContent');
             
             mainContent.addEventListener('scroll', () => {
+                if (!isMobileDevice()) return;
+                
                 isScrolling = true;
                 
                 // Clear previous timeout
@@ -907,6 +1177,7 @@
 
         // Menu Toggle
         function toggleMenu() {
+            if (!isMobileDevice()) return;
             if (isMenuOpen) {
                 closeMenu();
             } else {
@@ -928,6 +1199,7 @@
 
         // Grid Toggle
         function openGrid() {
+            if (!isMobileDevice()) return;
             document.getElementById('gridModal').classList.add('open');
             isGridOpen = true;
         }
@@ -939,6 +1211,7 @@
 
         // Switch Menu Filter
         function switchMenu(type, event) {
+            if (!isMobileDevice()) return;
             document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
             event.target.classList.add('active');
             
@@ -948,6 +1221,8 @@
 
         // Keyboard Support
         document.addEventListener('keydown', (e) => {
+            if (!isMobileDevice()) return;
+            
             // Prevent scrolling with arrow keys
             if (e.key.startsWith('Arrow')) {
                 e.preventDefault();
